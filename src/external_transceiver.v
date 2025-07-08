@@ -4,15 +4,15 @@ module pmod_interface (
         input wire clk,
         input wire rst_n,
         input wire miso,
-        input wire sig_in,
+        input wire processing_in,
 
         //outputs
         output wire mosi,
         output wire ncs,
-        output wire sig_out,
+        output wire processing_out,
         output wire sclk
 );
-reg [2:0] sync_miso, sync_ncs, sync_sig_in;
+reg [1:0] sync_miso, sync_ncs, sync_sig_in;
 
 always @(posedge clk or negedge rst_n) begin 
 

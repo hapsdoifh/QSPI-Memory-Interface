@@ -1,0 +1,18 @@
+`default_nettype none
+module pmod_interface (
+        //inputs
+        input wire clk,
+        input wire rst_n,
+        input wire noc_in,
+        input wire processing_in,
+
+        //outputs
+        output wire noc_out,
+        output wire processing_out,
+        output wire noc_ready,
+);
+reg [1:0] sync_noc_in, sync_processing_in;
+
+always @(posedge clk or negedge rst_n) begin 
+    
+end
