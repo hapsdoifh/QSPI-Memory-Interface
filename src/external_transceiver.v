@@ -3,17 +3,100 @@ module pmod_interface (
         //inputs
         input wire clk,
         input wire rst_n,
-        input wire miso,
-        input wire sig_in,
+        input wire DO_from_chip, //miso 
+        input reg [7:0] data,
+        input reg [8:0] opcode,
+        input reg [15:0] width;
 
         //outputs
-        output wire mosi,
-        output wire ncs,
-        output wire sig_out,
-        output wire sclk
+        output wire DI_to_chip, // mosi
+        output wire ncs, // only 1 chip used
+        output wire processing_out,
+        output wire sclk,
+        output wire io1, io2
 );
-reg [2:0] sync_miso, sync_ncs, sync_sig_in;
+localparam  read = 8'd3, write = 8'd2, page_program = 3, sector_erase = 4, block_erase_32 = 5, block_erase_64 = 6;
 
-always @(posedge clk or negedge rst_n) begin 
+//Op code: read
+//states IDLE: 0, Read: 1(03h), Write ena: 2(06h), Write dis: 3(04h), Page Program: 4(02h),
+// Sector erase: 5(20h), Block Erase(32kB): 6(52h), Block Erase(64kB): 7(D8h)
+reg [3:0] state,next_state;
+reg [1:0] DO_sync,proc_in_sync, sync_ncs;
+reg [15:0] cnt,next_cnt;
+reg serialized;,next_serialized;
+reg [7:0] shift, next_shift;
 
+//dont know what to do
+assign DI_to_chip = 0;
+assign ncs = 0;
+assign processing_out = 0;
+assign sclk = 0;
+
+always @(posedge clk or negedge rst_n) begin
+        //reset  
+        if (!rst_n) begin
+                state <= 0;
+                cnt <= 0;
+                DO_sync <= 0;
+                proc_in_sync <= 0;
+                sync_ncs <= 0;
+                shift <= 0;
+                serialized <= 0;
+        end else begin
+                state <= next_state;
+                cnt <= next_cnt;
+                DO_sync[1] <= DO_from_chip;
+                DO_sync[0] <= DO_sync[1];
+                proc_in_sync[1] <= proc_in_sync;
+                proc_in_sync[0] <= proc_in_sync[1];
+                sync_ncs[1] <= sync_ncs;
+                sync_ncs[0] <= sync_ncs[1];
+                serialized <= next_serialized;            
+        end
 end
+
+always @(*) begin
+        //default combinational logic
+        next_state = state;
+        next_cnt = cnt;
+        next_shift = shift;
+        next_serialized = serialized;
+        case (state)
+                //read state: 1, 
+                read: begin
+                   ncs = 1;
+                   if (conditions) begin
+                        
+                   end
+
+                end 
+                default: 
+        endcase
+end
+
+
+endmodule
+
+module read (
+        ports
+);
+        
+endmodule
+
+module page_program (
+        ports
+);
+        
+endmodule
+
+module blck_era (
+        ports
+);
+        
+endmodule
+
+module sector_erase (
+        ports
+);
+        
+endmodule
