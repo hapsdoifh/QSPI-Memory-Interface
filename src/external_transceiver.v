@@ -5,9 +5,9 @@ module pmod_interface (
         input wire rst_n,
         input wire DO_from_chip, //miso 
         input reg [7:0] data,
-        input reg [8:0] opcode,
-        input reg [15:0] width;
-
+        input wire [8:0] opcode,
+        input wire [15:0] width;
+        input wire [23:0] address,
         //outputs
         output wire DI_to_chip, // mosi
         output wire ncs, // only 1 chip used
@@ -78,9 +78,55 @@ end
 endmodule
 
 module read (
-        ports
+        //inputs
+        input wire clk,
+        input wire rst_n,
+        input wire DO_from_chip, //miso 
+        input wire [23:0] address
+        input wire [15:0] width,
+
+        //outputs
+        output wire DI_to_chip, // mosi
+        output wire ncs, // only 1 chip used
+        output wire processing_out, // output from read
+        output wire io1, io2
 );
+localparam idle = 0, send_opcode = 1, send_address = 2, reading = 3;
+//idle: 0 send_opcode = 1, send_address = 2, reading = 3
+
+        reg [1:0] next_state, state;
+        reg [4:0] cnt,next_cnt;
         
+        always @(posedge clk or negedge rst_n) begin
+                if (!rst_n) begin
+                    cnt <= 0;
+                    state <= 0;  
+                end else begin
+                        cnt <= next_cnt;
+                        state <= next_state;
+                end          
+        end
+
+        always @(*) begin
+                next_state = state;
+                next_cnt = cnt;
+                case (state)
+                        idle: begin
+                                next_state = next_state + 1;
+                                next_cnt = 0;
+                        end
+                        send_opcode: begin
+                                if (cnt <=) begin
+                                        
+                                end else begin
+                                        
+                                end
+                        end
+                        default: ;
+                endcase
+        end
+        
+
 endmodule
 
 module page_program (
