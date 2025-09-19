@@ -14,9 +14,9 @@ module pmod_interface (
         output wire processing_out,
         output wire sclk,
         output wire io1, io2
-);
+);      
 localparam  read = 8'd3, write = 8'd2, page_program = 3, sector_erase = 4, block_erase_32 = 5, block_erase_64 = 6;
-
+localparam  = ;
 //Op code: read
 //states IDLE: 0, Read: 1(03h), Write ena: 2(06h), Write dis: 3(04h), Page Program: 4(02h),
 // Sector erase: 5(20h), Block Erase(32kB): 6(52h), Block Erase(64kB): 7(D8h)
